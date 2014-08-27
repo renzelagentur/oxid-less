@@ -1,0 +1,15 @@
+{
+    "name": "ra/less",
+    "description": "This modul load less styles",
+    "authors": [
+        {
+            "name": "Mathis Schülingkamp",
+            "email": "math@vkf-renzel.de"
+        }
+    ],
+    "minimum-stability": "dev",
+    "type": "ra-module",
+    "require": {
+        "ra/installer": "dev-master"
+    }
+}
