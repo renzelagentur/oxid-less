@@ -12,14 +12,11 @@ function smarty_function_lessload($params, &$smarty) {
         $sStyle = $params['include'];
         $sLessFile = $sStyle;
         
-        var_dump($sLessFile);
-        
         if (!preg_match('#^http?://#', $sStyle)) {
             $aStyle = explode('?', $sStyle);
             $sResourceDir = $myConfig->getResourceDir($myConfig->isAdmin());
 
             $sLessFile = str_replace($sShopUrl, OX_BASE_PATH, $sLessFile);
-            var_dump('!');
         }
         
         // File not found ?
@@ -33,8 +30,6 @@ function smarty_function_lessload($params, &$smarty) {
             
             $less = new lessc;
             $less->setPreserveComments(false);
-            
-            var_dump($sLessFile);
             
             $sFilename = str_replace('/', '_', str_replace($sShopUrl, '', $sLessFile));
             
@@ -66,7 +61,5 @@ function smarty_function_lessload($params, &$smarty) {
     
     $params['include'] = str_replace($sShopUrl, OX_BASE_PATH, $sCssFile);
     
-    var_dump($sCssFile);
-
     return smarty_function_oxstyle($params, &$smarty);
 }
