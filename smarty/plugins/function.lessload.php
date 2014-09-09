@@ -18,7 +18,11 @@ function smarty_function_lessload($params, &$smarty) {
 
             $sLessFile = str_replace($sShopUrl, OX_BASE_PATH, $sLessFile);
         }
-        
+
+        if (!file_exists($sLessFile)) {
+            $sLessFile = $sResourceDir . 'less/' . $sLessFile;
+        }
+
         // File not found ?
         if (!$sLessFile) {
             if ($myConfig->getConfigParam('iDebug') != 0) {
@@ -27,27 +31,25 @@ function smarty_function_lessload($params, &$smarty) {
             }
             return;
         } else {
-            
             $less = new lessc;
             $less->setPreserveComments(false);
-            
+
             $sFilename = str_replace('/', '_', str_replace($sShopUrl, '', $sLessFile));
             
             if ($myConfig->isProductiveMode()) {
                 $less->setFormatter("compressed");
-                $sFilename = md5($sFilename);
             }
+            $sFilename = md5($sFilename) . '.css';
             
-            $sGenDir = $myConfig->getResourceDir($myConfig->isAdmin()) . 'gen/';
-            $sGenDir = str_replace('src/gen', 'gen', $sGenDir);
-            
-            if(!file_exists($sGenDir)) {
+            $sGenDir = $myConfig->getOutDir() . 'gen/';
+            if(!is_dir($sGenDir)) {
                 mkdir($sGenDir);
             }
-            
+
             $sCssFile = $sGenDir . $sFilename;
             $sCssFile = str_replace('.less', '.css', $sCssFile);
-            
+            $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getOutUrl(), $sCssFile);
+
             try {
                 // @todo: use cachedCompile instead
                 $less->checkedCompile($sLessFile, $sCssFile);
@@ -59,7 +61,7 @@ function smarty_function_lessload($params, &$smarty) {
         }
     }
     
-    $params['include'] = str_replace($sShopUrl, OX_BASE_PATH, $sCssFile);
+    $params['include'] = $sCssUrl;
     
-    return smarty_function_oxstyle($params, &$smarty);
+    return smarty_function_oxstyle($params, $smarty);
 }

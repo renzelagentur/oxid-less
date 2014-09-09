@@ -10,7 +10,7 @@ $sMetadataVersion = '1.1';
 
 $aModule = array(
     'id'          => 'raless',
-    'title'       => 'Renzel agentur Less',
+    'title'       => 'ra less',
     'description' => array(
         'de'    => 'Kompiliert LESS-Dateien',
         'en'    => 'Compiles LESS files',
@@ -32,7 +32,7 @@ $aModule = array(
     ),
     'files' => array(
         'ralessevents' => 'ra/less/events.php',
-        'lessc'             => 'ra/less/core/lessc.inc.php'
+        'lessc' => 'ra/less/core/lessc.inc.php'
     ),
     'events' => array(
         'onActivate'    => 'toxid_curl_events::onActivate',
