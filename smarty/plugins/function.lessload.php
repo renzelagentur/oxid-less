@@ -3,7 +3,6 @@
 function smarty_function_lessload($params, &$smarty) {
 
     $myConfig = oxRegistry::getConfig();
-    
     $sShopUrl = oxRegistry::getConfig()->getShopUrl();
     
     if ($params['include']) {
@@ -13,13 +12,19 @@ function smarty_function_lessload($params, &$smarty) {
         if (!preg_match('#^http?://#', $sStyle)) {
             $aStyle = explode('?', $sStyle);
             $sResourceDir = $myConfig->getResourceDir($myConfig->isAdmin());
-
             $sLessFile = str_replace($sShopUrl, OX_BASE_PATH, $sLessFile);
         }
 
-        if (!file_exists($sLessFile)) {
-            $sLessFile = $sResourceDir . 'less/' . $sLessFile;
+        /* @var $oActiveTheme \oxTheme */
+        $oActiveTheme = oxNew('oxTheme');
+        $oActiveTheme->load($oActiveTheme->getActiveThemeId());
+        $iShop = $myConfig->getShopId();
+
+        do {
+            $sLessFile = $myConfig->getDir($sLessFile, 'src/less', $myConfig->isAdmin(), oxRegistry::getLang()->getBaseLanguage(), $iShop, $oActiveTheme->getId());
+            $oActiveTheme = $oActiveTheme->getParent();
         }
+        while(!is_null($oActiveTheme) && !file_exists($sLessFile));
 
         // File not found ?
         if (!$sLessFile) {
