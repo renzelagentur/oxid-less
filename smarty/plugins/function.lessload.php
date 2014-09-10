@@ -1,7 +1,5 @@
 <?php
 
-include_once OX_BASE_PATH . 'core/smarty/plugins/function.oxstyle.php';
-
 function smarty_function_lessload($params, &$smarty) {
 
     $myConfig = oxRegistry::getConfig();
@@ -62,6 +60,9 @@ function smarty_function_lessload($params, &$smarty) {
     }
     
     $params['include'] = $sCssUrl;
-    
-    return smarty_function_oxstyle($params, $smarty);
+    if ($params['blNotUseOxStyle']) {
+        return '<link rel="stylesheet" type="text/css" href="'.$sCssUrl.'" />'.PHP_EOL;
+    } else {
+        return smarty_function_oxstyle($params, $smarty);
+    }
 }
