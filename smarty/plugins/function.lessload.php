@@ -4,11 +4,11 @@ function smarty_function_lessload($params, &$smarty) {
 
     $myConfig = oxRegistry::getConfig();
     $sShopUrl = oxRegistry::getConfig()->getShopUrl();
-    
+
     if ($params['include']) {
         $sStyle = $params['include'];
         $sLessFile = $sStyle;
-        
+
         if (!preg_match('#^http?://#', $sStyle)) {
             $aStyle = explode('?', $sStyle);
             $sResourceDir = $myConfig->getResourceDir($myConfig->isAdmin());
@@ -21,8 +21,8 @@ function smarty_function_lessload($params, &$smarty) {
         $iShop = $myConfig->getShopId();
 
         do {
-            $sLessFile = $myConfig->getDir($sLessFile, 'src/less', $myConfig->isAdmin(), oxRegistry::getLang()->getBaseLanguage(), $iShop, $oActiveTheme->getId());
-            $oActiveTheme = $oActiveTheme->getParent();
+            $sLessFile = $myConfig->getDir($sStyle, 'src/less', $myConfig->isAdmin(), oxRegistry::getLang()->getBaseLanguage(), $iShop, $oActiveTheme->getId());
+		    $oActiveTheme = $oActiveTheme->getParent();
         }
         while(!is_null($oActiveTheme) && !file_exists($sLessFile));
 
@@ -38,12 +38,12 @@ function smarty_function_lessload($params, &$smarty) {
             $less->setPreserveComments(false);
 
             $sFilename = str_replace('/', '_', str_replace($sShopUrl, '', $sLessFile));
-            
+
             if ($myConfig->isProductiveMode()) {
                 $less->setFormatter("compressed");
             }
             $sFilename = md5($sFilename) . '.css';
-            
+
             $sGenDir = $myConfig->getOutDir() . 'gen/';
             if(!is_dir($sGenDir)) {
                 mkdir($sGenDir);
@@ -63,7 +63,7 @@ function smarty_function_lessload($params, &$smarty) {
             }
         }
     }
-    
+
     $params['include'] = $sCssUrl;
     if ($params['blNotUseOxStyle']) {
         return '<link rel="stylesheet" type="text/css" href="'.$sCssUrl.'" />'.PHP_EOL;
