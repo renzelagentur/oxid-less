@@ -35,7 +35,7 @@ $aModule = array(
         'lessc' => 'ra/less/core/lessc.inc.php'
     ),
     'events' => array(
-        'onActivate'    => 'toxid_curl_events::onActivate',
-        'onDeactivate'  => 'toxid_curl_events::onDeactivate'
+        'onActivate'    => 'ralessevents::onActivate',
+        'onDeactivate'  => 'ralessevents::onDeactivate'
     )
 );
