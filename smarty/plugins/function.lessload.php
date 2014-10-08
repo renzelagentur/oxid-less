@@ -51,7 +51,7 @@ function smarty_function_lessload($params, &$smarty) {
 
             $sCssFile = $sGenDir . $sFilename;
             $sCssFile = str_replace('.less', '.css', $sCssFile);
-            $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getOutUrl(), $sCssFile);
+            $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getCurrentShopUrl() . 'out/', $sCssFile);
 
             try {
                 // @todo: use cachedCompile instead
