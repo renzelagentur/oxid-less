@@ -20,11 +20,13 @@ function smarty_function_lessload($params, &$smarty) {
         $oActiveTheme->load($oActiveTheme->getActiveThemeId());
         $iShop = $myConfig->getShopId();
 
-        do {
-            $sLessFile = $myConfig->getDir($sStyle, 'src/less', $myConfig->isAdmin(), oxRegistry::getLang()->getBaseLanguage(), $iShop, $oActiveTheme->getId());
+	    do {
+		    $sLessPathNFile = $myConfig->getDir($sLessFile, 'src/less', $myConfig->isAdmin(), oxRegistry::getLang()->getBaseLanguage(), $iShop, $oActiveTheme->getId());
 		    $oActiveTheme = $oActiveTheme->getParent();
-        }
-        while(!is_null($oActiveTheme) && !file_exists($sLessFile));
+	    }
+	    while(!is_null($oActiveTheme) && !file_exists($sLessPathNFile));
+
+	    $sLessFile = $sLessPathNFile;
 
         // File not found ?
         if (!$sLessFile) {
