@@ -10,6 +10,7 @@
     "minimum-stability": "dev",
     "type": "ra-module",
     "require": {
+        "leafo/lessphp": "v0.5.0",
         "ra/installer": "dev-master"
     }
 }

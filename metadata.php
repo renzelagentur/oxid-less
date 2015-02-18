@@ -30,10 +30,7 @@ $aModule = array(
             'file'                      => 'views/ra/blocks/tpl/layout/base.tpl'
         )
     ),
-    'files' => array(
-        'ralessevents' => 'ra/less/events.php',
-        'lessc' => 'ra/less/core/lessc.inc.php'
-    ),
+    'files' => array(),
     'events' => array(
         'onActivate'    => 'ralessevents::onActivate',
         'onDeactivate'  => 'ralessevents::onDeactivate'
