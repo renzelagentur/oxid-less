@@ -63,6 +63,20 @@ function smarty_function_lessload($params, $smarty)
 }
 
 /**
+ * get config param of active theme
+ *
+ * @param string $sKey var name
+ *
+ * @return mixed
+ */
+function getThemeConfigVar($sKey)
+{
+    /** @var \oxTheme $oTheme */
+    $oTheme = oxNew('oxTheme');
+    return oxRegistry::getConfig()->getShopConfVar($sKey, null, 'theme:' . $oTheme->getActiveThemeId());
+}
+
+/**
  * compile less file
  *
  * @param string $sShopUrl  shop url
@@ -73,36 +87,40 @@ function smarty_function_lessload($params, $smarty)
 function compile($sShopUrl, $sLessFile)
 {
     $myConfig = oxRegistry::getConfig();
-    $less = new lessc;
-    $less->setPreserveComments(false);
-
     $sFilename = str_replace('/', '_', str_replace($sShopUrl, '', $sLessFile));
-
-    if ($myConfig->isProductiveMode()) {
-        $less->setFormatter("compressed");
-    }
     $sFilename = md5($sFilename) . '.css';
 
     $sGenDir = $myConfig->getOutDir() . 'gen/';
-    if (!is_dir($sGenDir)) {
-        mkdir($sGenDir);
-    }
 
-    $sCssFile = $sGenDir . $sFilename;
-    $sCssFile = str_replace('.less', '.css', $sCssFile);
-    $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getCurrentShopUrl() . 'out/', $sCssFile);
+    $parser = new Less_Parser(
+        array(
+            'compress'     => $myConfig->isProductiveMode(),
+            'cache_method' => 'serialize',
+            'cache_dir'    => oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less'
+        )
+    );
+    /** @var \oxTheme $oTheme */
+    $oTheme = oxNew('oxTheme');
 
     try {
-        // @todo: use cachedCompile instead
-        $less->checkedCompile($sLessFile, $sCssFile);
+        $parser->parseFile($sLessFile, $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/');
+
+        $aVars = array();
+        foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
+            $aVars[$sVar] = getThemeConfigVar($sVar);
+        }
+        $parser->ModifyVars($aVars);
+
+        $sCssFile = $sGenDir . $sFilename;
+        $sCssFile = str_replace('.less', '.css', $sCssFile);
+        $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getCurrentShopUrl() . 'out/', $sCssFile);
+        file_put_contents($sCssFile, $parser->getCss());
 
         return $sCssUrl;
     } catch (Exception $e) {
         if ($myConfig->getConfigParam('iDebug') != 0) {
             trigger_error($e->getMessage(), E_USER_WARNING);
-
-            return $sCssUrl;
         }
     }
-    return $sCssUrl;
+    return null;
 }

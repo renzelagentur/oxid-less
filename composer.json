@@ -10,7 +10,7 @@
     "minimum-stability": "dev",
     "type": "ra-module",
     "require": {
-        "leafo/lessphp": "v0.5.0",
+        "oyejorge/less.php": "v1.7.0.2",
         "ra/installer": "dev-master"
     }
 }
