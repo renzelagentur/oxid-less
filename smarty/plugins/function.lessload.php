@@ -107,7 +107,9 @@ function compile($sShopUrl, $sLessFile)
 
         $aVars = array();
         foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
-            $aVars[$sVar] = getThemeConfigVar($sVar);
+            if (!is_null(getThemeConfigVar($sVar))) {
+                $aVars[$sVar] = getThemeConfigVar($sVar);
+            }
         }
         $parser->ModifyVars($aVars);
 
