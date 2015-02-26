@@ -105,13 +105,11 @@ function compile($sShopUrl, $sLessFile)
     try {
         $parser->parseFile($sLessFile, $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/');
 
-        $aVars = array();
         foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
-            if (!is_null(getThemeConfigVar($sVar))) {
-                $aVars[$sVar] = getThemeConfigVar($sVar);
+            if (!is_null(getThemeConfigVar($sVar)) && getThemeConfigVar($sVar) !== '') {
+                $parser->ModifyVars(array('$sVar' => getThemeConfigVar($sVar)));
             }
         }
-        $parser->ModifyVars($aVars);
 
         $sCssFile = $sGenDir . $sFilename;
         $sCssFile = str_replace('.less', '.css', $sCssFile);
