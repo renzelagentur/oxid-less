@@ -5,7 +5,7 @@
  * @version   GIT: $Id$ PHP5.4 (03.02.2015)
  * @author    Robin Lehrmann <info@renzel-agentur.de>
  * @copyright Copyright (C) 22.10.2014 renzel.agentur GmbH. All rights reserved.
- * @license   http://www.renzel-agentur.de/licenses/raoxid-1.0.txt
+ * @license   MIT
  * @link      http://www.renzel-agentur.de/
  *
  */

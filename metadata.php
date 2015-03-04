@@ -1,7 +1,4 @@
 <?php
-/**
- * @author   math <math@vkf-renzel.de>
- */
 
 /**
  * Metadata version
@@ -15,11 +12,11 @@ $aModule = array(
         'de'    => 'Kompiliert LESS-Dateien in Themes und Modulen',
         'en'    => 'Compiles LESS files in themes and modules',
     ),
-    'email'         => 'math@vkf-renzel.de',
+    'email'         => 'info@renzel-agentur.de',
     'url'           => 'http://www.renzel-agentur.de/',
     'thumbnail'     => 'picture.jpg',
     'version'       => '1.0',
-    'author'        => 'math@vkf-renzel.de',
+    'author'        => 'role@vkf-renzel.de',
     'extend' => array(
         'oxutilsview'       => 'ra/less/extend/raless_oxutilsview',
     ),
