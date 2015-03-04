@@ -3,13 +3,14 @@
     "description": "This modul load less styles",
     "authors": [
         {
-            "name": "Mathis Schülingkamp",
-            "email": "math@vkf-renzel.de"
+            "name": "Robin Lehrmann",
+            "email": "info@renzel-agentur.de"
         }
     ],
     "minimum-stability": "dev",
     "type": "ra-module",
     "require": {
+        "oyejorge/less.php": "v1.7.0.2",
         "ra/installer": "dev-master"
     }
 }
