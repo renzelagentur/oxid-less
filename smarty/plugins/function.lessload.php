@@ -106,18 +106,18 @@ function compile($sShopUrl, $sLessFile)
     $oTheme = oxNew('oxTheme');
 
     try {
-        $parser->parseFile($sLessFile, $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/');
-
-        foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
-            if (!is_null(getThemeConfigVar($sVar)) && getThemeConfigVar($sVar) !== '') {
-                $parser->ModifyVars(array($sVar => getThemeConfigVar($sVar)));
-            }
-        }
-
         $sCssFile = $sGenDir . $sFilename;
         $sCssFile = str_replace('.less', '.css', $sCssFile);
         $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getCurrentShopUrl() . 'out/', $sCssFile);
-        file_put_contents($sCssFile, $parser->getCss());
+        if (!file_exists($sCssFile) || !$myConfig->isProductiveMode()) {
+            $parser->parseFile($sLessFile, $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/');
+            foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
+                if (!is_null(getThemeConfigVar($sVar)) && getThemeConfigVar($sVar) !== '') {
+                    $parser->ModifyVars(array($sVar => getThemeConfigVar($sVar)));
+                }
+            }
+            file_put_contents($sCssFile, $parser->getCss());
+        }
 
         return $sCssUrl;
     } catch (Exception $e) {
