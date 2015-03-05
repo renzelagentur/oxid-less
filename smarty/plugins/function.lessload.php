@@ -91,6 +91,9 @@ function compile($sShopUrl, $sLessFile)
     $sFilename = md5($sFilename) . '.css';
 
     $sGenDir = $myConfig->getOutDir() . 'gen/';
+    if (!is_dir($sGenDir)) {
+        mkdir($sGenDir);
+    }
 
     $parser = new Less_Parser(
         array(
