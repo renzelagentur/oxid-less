@@ -20,7 +20,7 @@
 function smarty_function_lessload($params, $smarty)
 {
     $myConfig = oxRegistry::getConfig();
-    $sShopUrl = oxRegistry::getConfig()->getShopUrl();
+    $sShopUrl = oxRegistry::getConfig()->getCurrentShopUrl();
 
     if ($params['include']) {
         $sStyle = $params['include'];
@@ -87,8 +87,8 @@ function getThemeConfigVar($sKey)
 function compile($sShopUrl, $sLessFile)
 {
     $myConfig = oxRegistry::getConfig();
-    $sFilename = str_replace('/', '_', str_replace($sShopUrl, '', $sLessFile));
-    $sFilename = md5($sFilename) . '.css';
+    $sFilename = str_replace('/', '_', $sLessFile);
+    $sFilename = md5($sFilename . oxRegistry::getConfig()->getShopId()) . '.css';
 
     $sGenDir = $myConfig->getOutDir() . 'gen/';
     if (!is_dir($sGenDir)) {
