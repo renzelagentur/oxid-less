@@ -19,6 +19,7 @@ $aModule = array(
     'author'        => 'role@vkf-renzel.de',
     'extend' => array(
         'oxutilsview'       => 'ra/less/extend/raless_oxutilsview',
+        'theme_config'      => 'ra/less/extend/raless_theme_config'
     ),
     'blocks' => array(
         array(
