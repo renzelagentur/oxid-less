@@ -88,7 +88,7 @@ function compile($sShopUrl, $sLessFile)
 {
     $myConfig = oxRegistry::getConfig();
     $sFilename = str_replace('/', '_', $sLessFile);
-    $sFilename = md5($sFilename . oxRegistry::getConfig()->getShopId()) . '.css';
+    $sFilename = md5($sFilename . oxRegistry::getConfig()->getCurrentShopUrl()) . '.css';
 
     $sGenDir = $myConfig->getOutDir() . 'gen/';
     if (!is_dir($sGenDir)) {
