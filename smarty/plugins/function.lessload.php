@@ -9,7 +9,7 @@
  * @link      http://www.renzel-agentur.de/
  */
 
-require_once(OX_BASE_PATH . '/core/smarty/plugins/function.oxstyle.php');
+require_once OX_BASE_PATH . '/core/smarty/plugins/function.oxstyle.php';
 
 /**
  * less load smarty plugin
