@@ -98,7 +98,7 @@ function getThemeConfigVar($sKey)
 function compile($sShopUrl, $sLessFile, $myConfig)
 {
     $sFilename = str_replace('/', '_', $sLessFile);
-    $sFilename = md5($sFilename . oxRegistry::getConfig()->getCurrentShopUrl()) . '.css';
+    $sFilename = md5($sFilename . $sShopUrl) . '.css';
 
     $sGenDir = $myConfig->getOutDir() . 'gen/';
     if (!is_dir($sGenDir)) {
