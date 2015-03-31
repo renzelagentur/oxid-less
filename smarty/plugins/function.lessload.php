@@ -97,6 +97,7 @@ function getThemeConfigVar($sKey)
  */
 function compile($sShopUrl, $sLessFile, $myConfig)
 {
+
     $sFilename = str_replace('/', '_', $sLessFile);
     $sFilename = md5($sFilename . oxRegistry::getConfig()->getShopId()) . '.css';
 
@@ -119,17 +120,23 @@ function compile($sShopUrl, $sLessFile, $myConfig)
         $sCssFile = $sGenDir . $sFilename;
         $sCssFile = str_replace('.less', '.css', $sCssFile);
         $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getCurrentShopUrl() . 'out/', $sCssFile);
-        if (!file_exists($sCssFile) || !$myConfig->isProductiveMode()) {
+
+        $blFilemtimeMatch = filemtime($sLessFile) >= filemtime($sCssFile);
+
+        if (!file_exists($sCssFile) || (!$myConfig->isProductiveMode() && $blFilemtimeMatch)) {
             $parser->parseFile($sLessFile, $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/');
+
             foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
                 if (!is_null(getThemeConfigVar($sVar)) && getThemeConfigVar($sVar) !== '') {
                     $parser->ModifyVars(array($sVar => getThemeConfigVar($sVar)));
                 }
             }
+
             file_put_contents($sCssFile, $parser->getCss());
         }
 
         return $sCssUrl;
+
     } catch (Exception $e) {
         if ($myConfig->getConfigParam('iDebug') != 0) {
             trigger_error($e->getMessage(), E_USER_WARNING);
