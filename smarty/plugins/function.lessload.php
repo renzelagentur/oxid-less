@@ -121,7 +121,11 @@ function compile($sShopUrl, $sLessFile, $myConfig)
         $sCssFile = str_replace('.less', '.css', $sCssFile);
         $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getCurrentShopUrl() . 'out/', $sCssFile);
 
-        $blFilemtimeMatch = filemtime($sLessFile) >= filemtime($sCssFile);
+        if (file_exists($sLessFile) && file_exists($sCssFile)) {
+            $blFilemtimeMatch = filemtime($sLessFile) >= filemtime($sCssFile);
+        } else {
+            $blFilemtimeMatch = false;
+        }
 
         if (!file_exists($sCssFile) || (!$myConfig->isProductiveMode() && $blFilemtimeMatch)) {
             $parser->parseFile($sLessFile, $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/');
