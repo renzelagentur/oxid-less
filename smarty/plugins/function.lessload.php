@@ -106,41 +106,29 @@ function compile($sShopUrl, $sLessFile, $myConfig)
         mkdir($sGenDir);
     }
 
-    $parser = new Less_Parser(
-        array(
-            'compress'     => $myConfig->isProductiveMode(),
-            'cache_method' => 'serialize',
-            'cache_dir'    => oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less'
-        )
-    );
     /** @var \oxTheme $oTheme */
     $oTheme = oxNew('oxTheme');
 
     try {
-        $sCssFile = $sGenDir . $sFilename;
-        $sCssFile = str_replace('.less', '.css', $sCssFile);
-        $sCssUrl = str_replace($myConfig->getOutDir(), $myConfig->getCurrentShopUrl() . 'out/', $sCssFile);
+        $options = array(
+            'compress'     => true,
+            'cache_method' => 'serialize',
+            'cache_dir'    => oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less'
+        );
 
-        if (file_exists($sLessFile) && file_exists($sCssFile)) {
-            $blFilemtimeMatch = filemtime($sLessFile) >= filemtime($sCssFile);
-        } else {
-            $blFilemtimeMatch = false;
-        }
-
-        if (!file_exists($sCssFile) || (!$myConfig->isProductiveMode() && $blFilemtimeMatch)) {
-            $parser->parseFile($sLessFile, $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/');
-
-            foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
-                if (!is_null(getThemeConfigVar($sVar)) && getThemeConfigVar($sVar) !== '') {
-                    $parser->ModifyVars(array($sVar => getThemeConfigVar($sVar)));
-                }
+        $variables = array();
+        foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
+            if (!is_null(getThemeConfigVar($sVar)) && getThemeConfigVar($sVar) !== '') {
+                $variables[$sVar] = getThemeConfigVar($sVar);
             }
-
-            file_put_contents($sCssFile, $parser->getCss());
         }
 
-        return $sCssUrl;
+        $sCssFile = Less_Cache::Get(array($sLessFile => false), $options, $variables);
+        if (!file_exists($sGenDir . $sCssFile)) {
+            copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . $sCssFile, $sGenDir . $sCssFile);
+        }
 
+        return $myConfig->getCurrentShopUrl() . 'out/gen/' . $sCssFile;
     } catch (Exception $e) {
         if ($myConfig->getConfigParam('iDebug') != 0) {
             trigger_error($e->getMessage(), E_USER_WARNING);
