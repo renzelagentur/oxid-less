@@ -123,7 +123,7 @@ function compile($sShopUrl, $sLessFile, $myConfig)
             }
         }
 
-        $sCssFile = Less_Cache::Get(array($sLessFile => false), $options, $variables);
+        $sCssFile = Less_Cache::Get(array($sLessFile =>  $sShopUrl . $myConfig->getOutDir(false) . $oTheme->getActiveThemeId() . '/src/'), $options, $variables);
         if (!file_exists($sGenDir . $sCssFile)) {
             copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . $sCssFile, $sGenDir . $sCssFile);
         }
