@@ -42,8 +42,5 @@ $aModule = array(
             'value' => ''
         )
     ),
-    'events' => array(
-        'onActivate'    => 'ralessevents::onActivate',
-        'onDeactivate'  => 'ralessevents::onDeactivate'
-    )
+
 );
