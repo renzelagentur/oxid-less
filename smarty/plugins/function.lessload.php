@@ -44,11 +44,12 @@ function smarty_function_lessload($params, $smarty)
         if (!$blIsModule) {
             do {
                 $sLessPathNFile = $myConfig->getDir($sLessFile, 'src/less', $myConfig->isAdmin(), oxRegistry::getLang()->getBaseLanguage(), $iShop, $oActiveTheme->getId());
+                $oLastActiveTheme = $oActiveTheme;
                 $oActiveTheme = $oActiveTheme->getParent();
             } while (!is_null($oActiveTheme) && !file_exists($sLessPathNFile));
 
             $sLessFile = $sLessPathNFile;
-            $sPath = $sShopUrl . $myConfig->getOutDir(false) . $oActiveTheme->getActiveThemeId() . '/src/';
+            $sPath = $sShopUrl . $myConfig->getOutDir(false) . $oLastActiveTheme->getActiveThemeId() . '/src/';
         }
 
         // File not found ?
