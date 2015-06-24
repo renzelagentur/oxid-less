@@ -29,7 +29,7 @@ function smarty_function_lessload($params, $smarty)
         $sStyle = $params['include'];
         $sLessFile = $sStyle;
 
-        if (preg_match('#^http?://#', $sStyle)) {
+        if (preg_match('#^https?:\/\/#', $sStyle)) {
             $sLessFile = str_replace($sShopUrl, OX_BASE_PATH, $sLessFile);
             $blIsModule = true;
             $sPath = getModuleIdByFile($sStyle);
@@ -97,12 +97,12 @@ function getThemeConfigVar($sKey)
  */
 function getModuleIdByFile($file) {
     $oModule = oxNew('oxModule');
-    $sModuleUrl = str_replace(oxRegistry::getConfig()->getShopUrl() . 'modules/', '', $file);
+    $sModuleUrl = str_replace(oxRegistry::getConfig()->getCurrentShopUrl() . 'modules/', '', $file);
     $sExplodedModulePath = explode('/', $sModuleUrl);
     if (!$oModule->loadByDir($sExplodedModulePath[0] . '/' . $sExplodedModulePath[1])) {
         $oModule->loadByDir($sExplodedModulePath[0]);
     }
-    return oxRegistry::getConfig()->getShopUrl() . 'modules/' . $oModule->getModulePath() . '/';
+    return oxRegistry::getConfig()->getCurrentShopUrl() . 'modules/' . $oModule->getModulePath() . '/';
 }
 
 /**
