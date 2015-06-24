@@ -49,7 +49,7 @@ function smarty_function_lessload($params, $smarty)
             } while (!is_null($oActiveTheme) && !file_exists($sLessPathNFile));
 
             $sLessFile = $sLessPathNFile;
-            $sPath = $sShopUrl . $myConfig->getOutDir(false) . $oLastActiveTheme->getActiveThemeId() . '/src/';
+            $sPath = '/' . $myConfig->getOutDir(false) . $oLastActiveTheme->getActiveThemeId() . '/src/';
         }
 
         // File not found ?
@@ -102,7 +102,7 @@ function getModuleIdByFile($file) {
     if (!$oModule->loadByDir($sExplodedModulePath[0] . '/' . $sExplodedModulePath[1])) {
         $oModule->loadByDir($sExplodedModulePath[0]);
     }
-    return oxRegistry::getConfig()->getCurrentShopUrl() . 'modules/' . $oModule->getModulePath() . '/';
+    return '/modules/' . $oModule->getModulePath() . '/';
 }
 
 /**
