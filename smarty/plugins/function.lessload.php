@@ -49,7 +49,7 @@ function smarty_function_lessload($params, $smarty)
             } while (!is_null($oActiveTheme) && !file_exists($sLessPathNFile));
 
             $sLessFile = $sLessPathNFile;
-            $sPath = $sShopUrl . $myConfig->getOutDir(false) . $oLastActiveTheme->getActiveThemeId() . '/src/';
+            $sPath = '/' . $myConfig->getOutDir(false) . $oLastActiveTheme->getActiveThemeId() . '/src/';
         }
 
         // File not found ?
@@ -91,11 +91,12 @@ function getThemeConfigVar($sKey)
 /**
  * get module by file
  *
- * @param $file module file path
+ * @param string $file module file path
  *
  * @return string
  */
-function getModuleIdByFile($file) {
+function getModuleIdByFile($file)
+{
     $oModule = oxNew('oxModule');
     $sModuleUrl = str_replace(oxRegistry::getConfig()->getShopUrl() . 'modules/', '', $file);
     $sExplodedModulePath = explode('/', $sModuleUrl);
@@ -142,7 +143,7 @@ function compile($sPath, $sLessFile)
             copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . $sCssFile, $sGenDir . $sCssFile);
         }
 
-        return $myConfig->getCurrentShopUrl() . 'out/gen/' . $sCssFile;
+        return '/out/gen/' . $sCssFile;
     } catch (Exception $e) {
         if ($myConfig->getConfigParam('iDebug') != 0) {
             trigger_error($e->getMessage(), E_USER_WARNING);
