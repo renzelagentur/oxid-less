@@ -109,6 +109,9 @@ class GenerateCommand extends oxConsoleCommand
     public function execute(oxIOutput $oOutput)
     {
         $sGenDir = oxRegistry::getConfig()->getOutDir() . 'gen/';
+        if (is_dir($sGenDir)) {
+            mkdir($sGenDir);
+        }
         $lessFiles = array();
         $options = array(
             'compress' => true,
@@ -123,7 +126,7 @@ class GenerateCommand extends oxConsoleCommand
         foreach ($this->_getFilesByExtension('less') as $less) {
             foreach ($lessFiles as $lessFile) {
                 if (strpos($less, $lessFile)) {
-                    $sCssFile = md5($less) . '.css';
+                    $sCssFile = md5(realpath($less)) . '.css';
                     if (strpos($less, 'module')) {
                         $path = $this->_getModuleUrlByFile($less);
                     } else {
