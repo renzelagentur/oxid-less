@@ -49,7 +49,7 @@ function smarty_function_lessload($params, $smarty)
             } while (!is_null($oActiveTheme) && !file_exists($sLessPathNFile));
 
             $sLessFile = $sLessPathNFile;
-            $sPath = '/' . $myConfig->getOutDir(false) . $oLastActiveTheme->getActiveThemeId() . '/src/';
+            $sPath = $myConfig->getShopConfVar('sCDNUrl', null, 'module:raless') . '/';
         }
 
         // File not found ?
@@ -65,10 +65,11 @@ function smarty_function_lessload($params, $smarty)
         }
     }
 
-    $params['include'] = $sCssUrl;
     if ($params['blNotUseOxStyle']) {
+        $params['include'] = $sCssUrl;
         return '<link rel="stylesheet" type="text/css" href="' . $sCssUrl . '" />' . PHP_EOL;
     } else {
+        $params['include'] = $myConfig->getCurrentShopUrl() . ltrim($sCssUrl, '/');
         return smarty_function_oxstyle($params, $smarty);
     }
 }
@@ -103,7 +104,7 @@ function getModuleIdByFile($file)
     if (!$oModule->loadByDir($sExplodedModulePath[0] . '/' . $sExplodedModulePath[1])) {
         $oModule->loadByDir($sExplodedModulePath[0]);
     }
-    return oxRegistry::getConfig()->getShopUrl() . 'modules/' . $oModule->getModulePath() . '/';
+    return '/modules/' . $oModule->getModulePath() . '/';
 }
 
 /**
@@ -127,23 +128,23 @@ function compile($sPath, $sLessFile)
         $options = array(
             'compress'     => true,
             'cache_method' => 'serialize',
-            'cache_dir'    => oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less'
+            'cache_dir'    => '/' . trim(oxRegistry::get("oxConfigFile")->getVar("sCompileDir"), '/') . '/less'
         );
 
         $variables = array();
         foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
             $sThemeConfVar = getThemeConfigVar($sVar);
-            if (!is_null($sThemeConfVar) && $sThemeConfVar !== '') {
+            if ($sVar !== '' && !is_null($sThemeConfVar) && $sThemeConfVar !== '') {
                 $variables[$sVar] = $sThemeConfVar;
             }
         }
 
-        $sCssFile = Less_Cache::Get(array($sLessFile => $sPath), $options, $variables);
-        if (!file_exists($sGenDir . $sCssFile)) {
-            copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . $sCssFile, $sGenDir . $sCssFile);
+        $sCssFile = md5($sLessFile) . '.css';
+        if (!file_exists($sGenDir . $sCssFile) || !$myConfig->isProductiveMode()) {
+            copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . Less_Cache::Get(array($sLessFile => $sPath), $options, $variables), $sGenDir . $sCssFile);
         }
 
-        return '/out/gen/' . $sCssFile;
+        return $myConfig->getShopConfVar('sCDNUrl', null, 'module:raless') . '/out/gen/' . $sCssFile;
     } catch (Exception $e) {
         if ($myConfig->getConfigParam('iDebug') != 0) {
             trigger_error($e->getMessage(), E_USER_WARNING);

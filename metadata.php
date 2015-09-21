@@ -40,6 +40,12 @@ $aModule = array(
             'name'  => 'sVariables',
             'type'  => 'str',
             'value' => ''
+        ),
+        array(
+            'group' => 'main',
+            'name'  => 'sCDNUrl',
+            'type'  => 'str',
+            'value' => ''
         )
     ),
 
