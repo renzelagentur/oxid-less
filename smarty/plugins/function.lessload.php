@@ -139,7 +139,7 @@ function compile($sPath, $sLessFile)
             }
         }
 
-        $sCssFile = md5($sLessFile) . '.css';
+        $sCssFile = md5(realpath($sLessFile)) . '.css';
         if (!file_exists($sGenDir . $sCssFile) || !$myConfig->isProductiveMode()) {
             copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . Less_Cache::Get(array($sLessFile => $sPath), $options, $variables), $sGenDir . $sCssFile);
         }
