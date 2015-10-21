@@ -15,6 +15,6 @@
     "type": "ra-module",
     "require": {
         "oyejorge/less.php": "v1.7.0.2",
-        "ra/installer": "dev-master"
+        "ra/installer": "1.1.*"
     }
 }

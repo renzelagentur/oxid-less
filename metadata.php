@@ -33,11 +33,19 @@ $aModule = array(
             'file'                      => 'views/admin/blocks/tpl/theme_config.tpl'
         )
     ),
-    'files' => array(),
+    'files' => array(
+        'RALessGeneratorService' => 'ra/less/core/ralessgeneratorservice.php'
+    ),
     'settings' => array(
         array(
             'group' => 'main',
             'name'  => 'sVariables',
+            'type'  => 'str',
+            'value' => ''
+        ),
+        array(
+            'group' => 'main',
+            'name'  => 'sCDNUrl',
             'type'  => 'str',
             'value' => ''
         )
