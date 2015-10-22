@@ -44,7 +44,7 @@ class RALessGeneratorService
             if (is_array($rawResults)) {
                 $results = array();
                 foreach ($rawResults as $result) {
-                    $results[] = basename($result[0]);
+                    $results[] = $result[0];
                 }
                 return array_unique($results);
             }
@@ -118,7 +118,7 @@ class RALessGeneratorService
         foreach ($this->_getFilesByExtension('tpl') as $file) {
             foreach ($this->_parseForLess($file) as $lessFile) {
                 foreach ($this->_getFilesByExtension('less') as $less) {
-                    if (basename($less) === $lessFile) {
+                    if (basename($less) === basename($lessFile)) {
                         $lessFiles[] = $less;
                     }
                 }
