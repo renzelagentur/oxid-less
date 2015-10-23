@@ -157,7 +157,7 @@ class RALessGeneratorService
                 $path = $this->_getUrl();
             }
             copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . Less_Cache::Get(array($less => $path), $options), $sGenDir . $sCssFile);
-            $results[$less] = '/' . self::GEN_DIR . $sCssFile;
+            $results[$less] = self::GEN_DIR . $sCssFile;
         }
         return $results;
     }
