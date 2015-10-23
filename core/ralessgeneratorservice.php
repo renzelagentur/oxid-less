@@ -84,7 +84,7 @@ class RALessGeneratorService
         if ($cdnUrl) {
             return rtrim($cdnUrl, '/') . '/';
         }
-        return;
+        return '/';
     }
 
     /**
