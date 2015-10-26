@@ -48,6 +48,7 @@ function smarty_function_lessload($params, $smarty)
                 $oActiveTheme = $oActiveTheme->getParent();
             } while (!is_null($oActiveTheme) && !file_exists($sLessPathNFile));
             $sLessFile = $sLessPathNFile;
+            $sPath = $myConfig->getShopConfVar('sCDNUrl', null, 'module:raless') . '/';
         }
 
         // File not found ?
