@@ -29,7 +29,7 @@ function smarty_function_lessload($params, $smarty)
         $sStyle = $params['include'];
         $sLessFile = $sStyle;
 
-        if (preg_match('#^https?:\/\/#', $sStyle)) {
+        if (preg_match('#^http?://#', $sStyle)) {
             $sLessFile = str_replace($sShopUrl, OX_BASE_PATH, $sLessFile);
             $blIsModule = true;
             $sPath = getModuleIdByFile($sStyle);
@@ -39,17 +39,15 @@ function smarty_function_lessload($params, $smarty)
         $oActiveTheme = oxNew('oxTheme');
         $oActiveTheme->load($oActiveTheme->getActiveThemeId());
         $iShop = $myConfig->getShopId();
+        $sPath = $myConfig->getShopConfVar('sCDNUrl', null, 'module:raless') . '/';
 
         // less file not in a module path
         if (!$blIsModule) {
             do {
                 $sLessPathNFile = $myConfig->getDir($sLessFile, 'src/less', $myConfig->isAdmin(), oxRegistry::getLang()->getBaseLanguage(), $iShop, $oActiveTheme->getId());
-                $oLastActiveTheme = $oActiveTheme;
                 $oActiveTheme = $oActiveTheme->getParent();
             } while (!is_null($oActiveTheme) && !file_exists($sLessPathNFile));
-
             $sLessFile = $sLessPathNFile;
-            $sPath = '/' . $myConfig->getOutDir(false) . $oLastActiveTheme->getActiveThemeId() . '/src/';
         }
 
         // File not found ?
@@ -61,14 +59,17 @@ function smarty_function_lessload($params, $smarty)
 
             return;
         } else {
-            $sCssUrl = compile($sPath, $sLessFile);
+            $lessGenerator = oxNew('RALessGeneratorService');
+            $sCssUrls = $lessGenerator->generate(array($sLessFile));
+            $sCssUrl = $sCssUrls[$sLessFile];
         }
     }
 
-    $params['include'] = $sCssUrl;
     if ($params['blNotUseOxStyle']) {
+        $params['include'] = $sCssUrl;
         return '<link rel="stylesheet" type="text/css" href="' . $sCssUrl . '" />' . PHP_EOL;
     } else {
+        $params['include'] = $myConfig->getCurrentShopUrl() . ltrim($sCssUrl, '/');
         return smarty_function_oxstyle($params, $smarty);
     }
 }
@@ -91,63 +92,17 @@ function getThemeConfigVar($sKey)
 /**
  * get module by file
  *
- * @param $file module file path
+ * @param string $file module file path
  *
  * @return string
  */
-function getModuleIdByFile($file) {
+function getModuleIdByFile($file)
+{
     $oModule = oxNew('oxModule');
-    $sModuleUrl = str_replace(oxRegistry::getConfig()->getCurrentShopUrl() . 'modules/', '', $file);
+    $sModuleUrl = str_replace(oxRegistry::getConfig()->getShopUrl() . 'modules/', '', $file);
     $sExplodedModulePath = explode('/', $sModuleUrl);
     if (!$oModule->loadByDir($sExplodedModulePath[0] . '/' . $sExplodedModulePath[1])) {
         $oModule->loadByDir($sExplodedModulePath[0]);
     }
     return '/modules/' . $oModule->getModulePath() . '/';
-}
-
-/**
- * compile less file
- *
- * @param string $sPath     path to sources
- * @param string $sLessFile lessFilePath
- *
- * @return mixed|null
- */
-function compile($sPath, $sLessFile)
-{
-    $myConfig = oxRegistry::getConfig();
-
-    $sGenDir = $myConfig->getOutDir() . 'gen/';
-    if (!is_dir($sGenDir)) {
-        mkdir($sGenDir);
-    }
-
-    try {
-        $options = array(
-            'compress'     => true,
-            'cache_method' => 'serialize',
-            'cache_dir'    => oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less'
-        );
-
-        $variables = array();
-        foreach (explode(',', trim($myConfig->getShopConfVar('sVariables', null, 'module:raless'))) as $sVar) {
-            $sThemeConfVar = getThemeConfigVar($sVar);
-            if (!is_null($sThemeConfVar) && $sThemeConfVar !== '') {
-                $variables[$sVar] = $sThemeConfVar;
-            }
-        }
-
-        $sCssFile = Less_Cache::Get(array($sLessFile => $sPath), $options, $variables);
-        if (!file_exists($sGenDir . $sCssFile)) {
-            copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . $sCssFile, $sGenDir . $sCssFile);
-        }
-
-        return $myConfig->getCurrentShopUrl() . 'out/gen/' . $sCssFile;
-    } catch (Exception $e) {
-        if ($myConfig->getConfigParam('iDebug') != 0) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-        }
-    }
-
-    return null;
 }
