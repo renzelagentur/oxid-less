@@ -22,7 +22,6 @@ require_once OX_BASE_PATH . '/core/smarty/plugins/function.oxstyle.php';
 function smarty_function_lessload($params, $smarty)
 {
     $myConfig = oxRegistry::getConfig();
-    $sShopUrl = oxRegistry::getConfig()->getCurrentShopUrl();
     $blIsModule = false;
 
     if ($params['include']) {
@@ -30,7 +29,7 @@ function smarty_function_lessload($params, $smarty)
         $sLessFile = $sStyle;
 
         if (preg_match('#^http?://#', $sStyle)) {
-            $sLessFile = str_replace($sShopUrl, OX_BASE_PATH, $sLessFile);
+            $sLessFile = str_replace(oxRegistry::getConfig()->getCurrentShopUrl(), OX_BASE_PATH, $sLessFile);
             $blIsModule = true;
             $sPath = getModuleIdByFile($sStyle);
         }
@@ -60,8 +59,7 @@ function smarty_function_lessload($params, $smarty)
 
             return;
         } else {
-            $lessGenerator = oxNew('RALessGeneratorService');
-            $sCssUrls = $lessGenerator->generate(array($sLessFile));
+            $sCssUrls = oxRegistry::get('RALessGeneratorService')->generate(array($sLessFile));
             $sCssUrl = $sCssUrls[$sLessFile];
         }
     }

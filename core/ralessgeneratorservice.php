@@ -11,7 +11,7 @@
  */
 class RALessGeneratorService
 {
-    const GEN_DIR = '/out/gen/';
+    const GEN_DIR = 'out/gen/';
 
     /**
      * @var array
@@ -156,8 +156,8 @@ class RALessGeneratorService
             } else {
                 $path = $this->_getUrl();
             }
-            copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . 'less/' . Less_Cache::Get(array($less => $path), $options), $sGenDir . $sCssFile);
-            $results[$less] = self::GEN_DIR . $sCssFile;
+            copy(oxRegistry::get("oxConfigFile")->getVar("sCompileDir") . '/less/' . Less_Cache::Get(array($less => $path), $options), $sGenDir . $sCssFile);
+            $results[$less] = '/' . self::GEN_DIR . $sCssFile;
         }
         return $results;
     }
